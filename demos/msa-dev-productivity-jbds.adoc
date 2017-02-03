@@ -1,12 +1,12 @@
-## Increase Developer Productivity with Container
+## Increase Developer Productivity with Container (with JBoss Developer Studio)
 
 [cols="1d,7v", width="80%"]
 |===
 |*Length*|~6 min
 |*Difficulty*|Hard
-|*Slides*|TBD
+|*Slides*|NA
 |*Video*|https://drive.google.com/open?id=0B630TpgzAhO_SE9QTTJNb04tQms[Google Drive]
-|*Simulation*|-
+|*Simulation*|NA
 |===
 
 ====
