@@ -1,65 +1,66 @@
 ## Building Quality into Development Process
 
-[format="csv",cols="2"]
-|======
-*Length*,5 min
-*Difficulty*,Easy
-*Slides*,TBD
-*Video*,https://drive.google.com/open?id=0B630TpgzAhO_QXJMUnp2LTFIMGc[Google Drive]
-*Simulation (Mac)*,TBD
-|======
+[cols="1d,7v", width="80%"]
+|===
+|*Length*|~5 min
+|*Difficulty*|Easy
+|*Slides*|https://docs.google.com/presentation/d/1bt4k9yB0wDOj0d5WzDCWqftPxIizQ7f5S15LysEGFyQ/edit#slide=id.g1b05a1839c_0_0[Google Slide]
+|*Video*|https://drive.google.com/open?id=0B630TpgzAhO_QXJMUnp2LTFIMGc[Google Drive]
+|*Simulation*|https://drive.google.com/open?id=0B630TpgzAhO_YUNvV0ViS0g5cXM[Mac]
+https://drive.google.com/open?id=0B630TpgzAhO_dWxrZTlWeXV3Yjg[HTML]
+|===
+
 
 ### Explain the Demo Concepts
 
 * Explain the quality process with fork, PR and code-review
 
 ### Demonstrate Storing Code Changes in Git Repository
+
 * Explain that the developer should commit the code changes to his Git
 repository to be able to shared them for code-review with the team
-* Right-click on inventory in the *Project Explorer* in JBDS, click on
-*Team* and then on *Commit*
-
-image::demos/msa-dev-team-commit.png[Git Commit,width=820,align=center]
-
-* In the *Unstaged Changes* field, click and drag
-+InventoryService.java+ and +InventoryServiceTest.java+ to *Staged Changes*
-field to specify which changes should be committed to the Git
-repository.
-* Specify +Issue #312 fixed+ in the *Commit Message* field and click on
-*Commit and Push*
-
-image::demos/msa-dev-commit.png[Git Commit,width=920,align=center]
-
-* If asked for username and password, enter the developer username and
-password and then click on *OK* and *OK* again.
-** Username: _{{GOGS_DEV_USER}}_
-** Password: _{{GOGS_DEV_PASSWORD}}_
-
-* Explain that the code change is stored in the developers Git
-repository
-
-### Demonstrate Submitting Changes for Code Review
-
-* Go to *Gogs* web.
 
 ====
-NOTE: *Gogs* git server is used in this demo as the Git repository and it is deployed in the *CI/CD* project and accessible at {{GOGS_URL}}. Open *Gogs* in your browser in a new tab by entering the correct URL. Alternatively, click on *OpenShift Container Platform* logo in the header,
+NOTE: *Gogs* git server is used in this demo as the Git repository and it is deployed in the *CI/CD*
+project and accessible at {{GOGS_URL}}. Open *Gogs* in your browser in a new tab by entering the
+correct URL. Alternatively, click on *OpenShift Container Platform* logo in the header,
 then on *CI/CD* project and then on *Gogs* route URL to open *Gogs* in a new tab.
 ====
 
-* In *Gogs* web, click on Sign In and enter the developer credentials
+* Explain *Gogs* as the team source repository where the CoolStore
+application source code and configuration is stored and managed
+* In *Gogs* web, click on *Sign In* and enter the developer credentials
 ** Username: _{{GOGS_DEV_USER}}_
 ** Password: _{{GOGS_DEV_PASSWORD}}_
 
+image::demos/msa-dev-gogs-web.png[Gogs Web,width=920,align=center]
+
 * In *My Repositories*, click on *coolstore-microservices* repository
-* Explain that the repository displays the last code commit by the
-developer user from the previous steps
+* Browse the git repository to get to {{GOGS_DEV_REPO_URL_PREFIX}}/src/master/inventory-service/src/main/java/com/redhat/coolstore/service/InventoryService.java[`inventory-service\src\main\java\com\redhat\coolstore\service\InventoryService.java`]
+
+image::demos/msa-dev-gogs-browse.png[Browse Git Repository,width=920,align=center]
+
+* Click on the edit icon to open {{GOGS_DEV_REPO_URL_PREFIX}}/_edit/master/inventory-service/src/main/java/com/redhat/coolstore/service/InventoryService.java[`InventoryService.java`] in the text editor
+
+image::demos/msa-dev-gogs-edit.png[Edit Java Class,width=920,align=center]
+
+* Remove the `//` from the commented lines to uncomment them
+
+image::demos/msa-dev-gogs-edit-uncomment.png[Uncomment InventoryService.java,width=920,align=center]
+
+* Enter `Issue #312 fixed` in the field in the *Commit Changes* section and then click on
+*Commit Changes* button
+
+image::demos/msa-dev-gogs-commit.png[Commit Changes,width=920,align=center]
+
+* Explain that the changes are committed to the Git repository in order to show the recalled products out-of-stock
+
+* Click on the green compare button to see the
+differences between the developer Git repository and the teams Git
+repository
 
 image::demos/msa-dev-pullrequest.png[Create Pull Request,width=1000,align=center]
 
-* Click on the green compare button displayed above to see the
-differences between the developer Git repository and the teams Git
-repository
 * Scroll down and explain that the only change is the code you committed
 to the Git repository in the previous steps
 * Specify +Issue #312 fixed+ in the *Title* field and click on *Create Pull Request* button
