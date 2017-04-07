@@ -114,12 +114,17 @@ created from a file, called `application.properties`, available in the
 detects the configuration change, and automatically deploys the *Pod* with
 the new configuration.
 
+You need to specify the SpringBoot application what is the location of this file, 
+via a `JAVA_ARGS` environment variable with a variable `--spring.config.location`
+pinting to the file.
+
 Also, as we have configured `nationalparks` through `ConfigMap`, you can remove
 the database environment variables set in the link:databases[previous labs]:
 
 [source]
 ----
-oc env dc/nationalparks MONGODB_USER- MONGODB_PASSWORD- MONGODB_DATABASE- MONGODB_SERVER_HOST-
+oc env dc/nationalparks MONGODB_USER- MONGODB_PASSWORD- MONGODB_DATABASE- MONGODB_SERVER_HOST- \
+       JAVA_ARGS=--spring.config.location=file:/opt/openshift/config/application.properties
 ----
 
 You have now externalized `nationalparks` configuration. Visit the `nationalparks` web
