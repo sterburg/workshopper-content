@@ -153,47 +153,6 @@ Overall, that's how simple it is to scale an application (*Pods* in a
 is just launching new instances of an existing image, especially if that image
 is already cached on the node.
 
-### Application "Self Healing"
-
-Because OpenShift's *RCs* are constantly monitoring to see that the desired number
-of *Pods* actually is running, you might also expect that OpenShift will "fix" the
-situation if it is ever not right. You would be correct!
-
-Since we have two *Pods* running right now, let's see what happens if we
-"accidentally" kill one. Run the `oc get pods` command again, and choose a *Pod*
-name. Then, do the following:
-
-[source]
-----
-oc delete pod parksmap-1-hx0kv
-----
-
-Then, as fast as you can, do the following:
-
-[source]
-----
-oc get pods
-----
-
-Did you notice anything different? The names of the *Pods* are slightly changed.
-That's because OpenShift almost immediately detected that the current state (1
-*Pod*) didn't match the desired state (2 *Pods*), and it fixed it by scheduling
-another *Pod*.
-
-Additionally, OpenShift provides rudimentary capabilities around checking the
-liveness and/or readiness of application instances. If the basic checks are
-insufficient, OpenShift also allows you to run a command inside the container in
-order to perform the check. That command could be a complicated script that uses
-any installed language.
-
-Based on these health checks, if OpenShift decided that our `parksmap`
-application instance wasn't alive, it would kill the instance and then restart
-it, always ensuring that the desired number of replicas was in place.
-
-More information on probing applications is available in the
-https://{{DOCS_URL}}/latest/dev_guide/application_health.html[Application
-Health] section of the documentation.
-
 ### Exercise: Scale Down
 
 Before we continue, go ahead and scale your application down to a single

@@ -95,6 +95,7 @@ retrieve information and invoke action in OpenShift:
 ----
 oc policy add-role-to-user edit -z jenkins
 ----
+TODO: add RoleBinding to Template && remove this part from lab.
 
 ### Exercise: Remove Dev from `parksmap`
 Since we are going to be replacing the current `nationalparks` application with
@@ -105,6 +106,7 @@ taking away the *Route* label:
 ----
 oc label route nationalparks type-
 ----
+TODO: remove/automate all this dev/live exercise.
 
 ### Exercise: Create Live Environment
 

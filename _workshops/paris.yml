@@ -49,12 +49,11 @@ modules:
   - routes
   - logging
   - permissions
-  - remote-ops
   - java
+  - application-health
   - databases
   - configmap
-  - application-health
-  - pipelines
   - codechanges
   - templates
-  - clustering
+  - canaryrelease
+  - pipelines
