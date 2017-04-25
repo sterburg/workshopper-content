@@ -252,3 +252,19 @@ oc get template mlbparks -o yaml
 ----
 
 
+#### Label Service
+As discussed in link:databases[previous labs], the `parksmap` web app queries the OpenShift API and
+looks for routes that have the label `type=parksmap-backend` and interrogates the
+discovered endpoints to visualize their map data. After creating the "live" app,
+`parksmap` should use the *Live* container instead of the *Dev* container so that
+deployments to the *Dev* container does not disrupt the `parksmap` application.
+You can do that by removing the `type` label from the *Dev* route and adding it
+to the *Live* route:
+
+[source]
+----
+oc label route nationalparks type-
+oc label route nationalparks-live type=parksmap-backend
+----
+
+

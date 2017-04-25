@@ -187,7 +187,7 @@ modules:
   canaryrelease:
     name: Canary Release to Production
     requires:
-      - pipelines
+      - templates
   templates:
     name: Using Application Templates
     vars:
