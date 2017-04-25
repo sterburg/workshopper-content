@@ -11,7 +11,7 @@ achieved.
 #### Exercise: Configuring GitLab Web Hooks
 
 
-{% if modules.pipelines %}
+{% if modules.pipelines_first %}
 In previous labs, you created a CI/CD Pipeline to automate build, test and deployment of
 the `nationalparks` application. In this lab you can use the pipline webhook to
 trigger a pipeline execution every time there is a change in the `nationalparks` GitLab
@@ -147,7 +147,7 @@ return new Backend("nationalparks","OpenShift National Parks", new Coordinates("
 Click on Commit changes at the bottom of the screen. Feel free to enter a commit
 message.
 
-{% if modules.pipelines %}
+{% if modules.pipelines_first %}
 
 Once you have committed your changes, the `nationalparks-pipeline` should almost
 instantaneously be triggered in OpenShift. Look at the *Builds* &rarr; *Pipelines*
@@ -211,8 +211,6 @@ which has deployed the application:
 $ oc get dc
 ----
 
-// TODO: Need non-pipeline version
-
 The output will be similar to the following:
 
 [source]
@@ -220,13 +218,11 @@ The output will be similar to the following:
 NAME                 REVISION   DESIRED   CURRENT   TRIGGERED BY
 jenkins              1          1         1         config,image(jenkins:latest)
 mongodb              1          1         1         config,image(mongodb:3.2)
-mongodb-live         1          1         1         config,image(mongodb:3.2)
-{% if modules.pipelines %}
+{% if modules.pipelines_first %}
 nationalparks        9          1         1         config
 {% else %}
 nationalparks        9          1         1         config,image(nationalparks:latest)
 {% endif %}
-nationalparks-live   4          1         1         config,image(nationalparks:live)
 parksmap             2          1         1         config,image(parksmap:{{PARKSMAP_VERSION}})
 ----
 
@@ -234,16 +230,14 @@ Now run the following command to rollback the latest code change:
 
 [source]
 ----
-oc rollback nationalparks-live
+oc rollback nationalparks
 ----
 
 You will see output like the following:
 
 [source]
 ----
-#5 rolled back to nationalparks-live-3
-Warning: the following images triggers were disabled: nationalparks:live
-  You can re-enable them with: oc set triggers dc/nationalparks-live --auto
+#5 rolled back to nationalparks-3
 ----
 
 Once the deploy is complete, verify that the page header is reverted to the
@@ -251,7 +245,7 @@ original header by viewing the application in your browser.
 
 [source,role=copypaste]
 ----
-http://nationalparks-live-{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}.{{ROUTER_ADDRESS}}/ws/info/
+http://nationalparks-{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}.{{ROUTER_ADDRESS}}/ws/info/
 ----
 
 [NOTE]
@@ -286,15 +280,15 @@ So, if we want to return to the "new code" version, that is deployment #4.
 
 [source]
 ----
-oc rollback nationalparks-live-4
+oc rollback nationalparks-4
 ----
 
 And you will see the following:
 [source]
 ----
-#6 rolled back to nationalparks-live-4
-Warning: the following images triggers were disabled: nationalparks:live
-  You can re-enable them with: oc set triggers dc/nationalparks-live --auto
+#6 rolled back to nationalparks-4
+Warning: the following images triggers were disabled: nationalparks:latest
+  You can re-enable them with: oc set triggers dc/nationalparks --auto
 ----
 
 Cool! Once the roll"back" is complete, verify you again see "OpenShift

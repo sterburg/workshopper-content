@@ -2,11 +2,79 @@
 
 ### Background: Canary Release
 
+#### Live Deployment
+
+The default behavior for OpenShift has every
+https://{{DOCS_URL}}/latest/architecture/core_concepts/builds_and_image_streams.html[build] 
+creating a new Docker image that is pushed into the internal registry,
+set with the `latest` tag. Since we do not want to immediately run or
+deploy the *Live* version of `nationalparks` when the image changes, we want the
+ability for the *Dev* and *Live* deployments to run different versions of the
+`nationalparks` image simultaneously. This will allow developers to continue
+changing and deploying *Dev* without affecting the *Live* environment. 
+
+We've used the template parameter APPLICATION_STAGE=live at our new app creation.
+This created a Deployment that is triggered based on image changes on only the "live" tag.
+
+[source]
+----
+oc get template mlbparks -o yaml
+    {
+      "kind": "DeploymentConfig"
+      "spec": {
+        "triggers": [
+          {
+            "type": "ImageChange",
+            "imageChangeParams": {
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "${APPLICATION_NAME}:${APPLICATION_STAGE}"
+              }
+            }
+          }
+        "template": {
+          "spec": {
+            "containers": [
+              {
+                "name": "${APPLICATION_NAME}-${APPLICATION_STAGE}",
+                "image": "${APPLICATION_NAME}:${APPLICATION_STAGE}"
+              }
+            ]
+        }
+      }
+    }
+----
+
+
+We've created the *Live* environment based on the same `nationalparks`
+Docker image created in link:java[previous labs]. Click on *Builds* &rarr;
+*Images* and then `nationalparks` to inspect the *ImageStream*.
+
+image::pipeline-live-image.png[National Parks Image Stream]
+
+
+In order to deploy the "live" application all we need to do is trigger 
+this image-change by changing the image of the "live" tag.
+We do this by pointing the "live" tag to the "latest" builded image.
+
+[source]
+----
+oc tag nationalparks:latest nationalparks:live
+----
+
+You should have seen a change on the *ImageStream* page in the UI.
+
+This command says "please use the existing image that the tag
+`nationalparks:latest` points to and also point it at `nationalparks:live`." Or,
+in other words "create a new tag (`live`) that points to whatever `latest`
+points to.
+
+While _new_ builds will update the `latest` tag, only a manual command (or an
+automated workflow, like we will implement with Jenkins) will update the `live`
+tag. The `live` tag keeps referring to the pervious Docker image and therefore
+leaves the *Live* environment intact.
 
 #### Exercise: TBD
-
-Got to GitLab and change "National Parks" name to "National Parks Geo" in `src/main/java/com/openshift/evg/roadshow/parks/rest/BackendController.java`.
-Commit the change to trigger the pipeline and wait at "Input Required" in pipeline
 
 Go to *Applications* -> *Routes* and click on `nationalparks-live`. Edit the route
 
@@ -29,11 +97,10 @@ Test the route
 
 [source]
 ----
-for i in {1..10}; do curl http://nationalparks-live-demo.10.2.2.15.xip.io/ws/info/ ; echo "" ; done
+for i in {1..10}; do curl http://nationalparks-live.{{ROUTER_ADDRESS}}/ws/info/ ; echo "" ; done
 ----
 
 
 Open parksmap in Chrome > Incognito or Firefox > New Private Window in order to disable caching. Refresh
 the page a few times and you should see every few requests the name of nationalparks in the right top menu changes.
 
-When happy with the change, go to pipeline and click on promote to deploy the change in the live environment.
