@@ -70,6 +70,12 @@ that they can see your project and its resources. This type of arrangement (view
 but not edit) might be ideal for a developer getting visibility into a
 production application's project.
 
+To see a list of all roles you can assign:
+[source,role=copypaste]
+----
+oc get clusterroles
+----
+
 ### Exercise: Redeploy Application
 One more step is required. We need to re-deploy the application because it's
 given up trying to query the API.

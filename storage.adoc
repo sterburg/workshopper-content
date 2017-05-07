@@ -2,19 +2,56 @@
 
 ### Background
 
-#### Exercise: Kill Database
+One of the concepts of being Cloud-Native is to be stateless by externalizing state.
+But this state still needs to be stored somewhere. And working with a Container Platform you would prefer this to be containerized too.
+OpenShift makes it easy to host for example a MySQL database with persistent storage mounted to it.
+Just like pods can move fluently between nodes in a cluster, Network Storage in the form of a Persistent Volume Claim (PVC) can move just as fluently with the pod.
 
-* show data
-* kill db by deleting pod in ui
-* refresh data - no data!
+A Persistent Volume Claim (PVC) creates an abstraction between the consumer claiming storage space for his application, and the underlaying infrastructure technically providing the storage.
+This way the consumer doesn't need to know the technical details and will instantly get a storage volume assigned based on his quota and availability from the pool of available storage volumes.
+
+The cluster-operator can integrate OpenShift with his existing SAN/NAS-infrastructure (like FibreChannel, NFS, iSCSI, Cinder, ...), or can run our unique Container Native Storage (CNS) that will run a Gluster Storage cluster natively in containers, thereby creating a Hyper-converged platform providing Storage, Networking, Compute, Security, ...
+
 
 #### Exercise: Create Claim
 
-* click in UI
-* rwo, 2gi, called mongo
+Our MongoDB currently is ephemeral, we can store data in it, but as soon as we kill & restart the container our state is gone and MongoDB starts with an empty database.
+Let's add a Persistent Volume to it where we can persist our data onto. All we need to do is create a Persistent Volume Claim (PVC) where we specify what type and how much storage we want.
+
+In the OpenShift WebUI, go to "Storage" in the left menu, then click on the button "Create Storage" on the right.
+Fill in the following details:
+* Storage Class = No Storage Class (this will select the default storage class)
+* Name          = mongodb-data
+* Access Mode   = Single User (RWO)  (this will only permit one pod to mount this volume)
+* Size          = 2 Gi
+
+image::storage-1[Storage Overview]
+image::storage-2[Create Storage]
+
+You should now see your Claim automatically bound to a Persistent Volume.
 
 #### Exercise: Attach Claim
 
-* oc volume dc/mongodb --add --claim-name=mongo -m /var/lib/mongodb/data --name mongodb-data --overwrite --type persistentVolumeClaim
+Now attach our Persistent Volume to our application (DeploymentConfig)
+
+```
+oc volume dc/mongodb --add --claim-name=mongodb-data -m /var/lib/mongodb/data --name mongodb-data --overwrite --type persistentVolumeClaim
+```
+
+This configuration change to our DeploymentConfig has triggered a re-deploy of our application.
 
 #### Exercise: Validate Storage
+We should now see our MongoDB startup with persistent storage. 
+We can validate this by looking at the mount points inside the container:
+
+```
+oc rsh dc/mongo mount |grep /var/lib/mongodb/data
+```
+
+if we kill and restart the container the data was persisted before and is still available.
+
+```
+oc rsh dc/mongo ls /var/lib/mongodb/data
+oc delete pod -l app=mongo
+oc rsh dc/mongo ls /var/lib/mongodb/data
+```

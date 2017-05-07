@@ -47,11 +47,10 @@ modules:
   - docker
   - scaling
   - routes
-  - logging
   - permissions
   - java
-  - application-health
   - databases
+  - storage 
   - configmap
   - codechanges
   - templates
