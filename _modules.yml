@@ -143,6 +143,8 @@ modules:
     name: Scaling
   routes:
     name: Creating Routes
+  storage:
+    name: Storage
   logging:
     name: Exploring OpenShift's Logging Capabilities
   permissions:
