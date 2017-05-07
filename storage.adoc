@@ -25,8 +25,8 @@ Fill in the following details:
 * Access Mode   = Single User (RWO)  (this will only permit one pod to mount this volume)
 * Size          = 2 Gi
 
-image::storage-1[Storage Overview]
-image::storage-2[Create Storage]
+image::storage-1.png[Storage Overview]
+image::storage-2.png[Create Storage]
 
 You should now see your Claim automatically bound to a Persistent Volume.
 
