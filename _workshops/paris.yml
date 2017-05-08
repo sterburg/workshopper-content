@@ -49,6 +49,7 @@ modules:
   - routes
   - permissions
   - java
+  - quotas
   - databases
   - storage 
   - configmap

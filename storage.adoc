@@ -3,14 +3,14 @@
 ### Background
 
 One of the concepts of being Cloud-Native is to be stateless by externalizing state.
-But this state still needs to be stored somewhere. And working with a Container Platform you would prefer this to be containerized too.
+But this state still needs to be stored somewhere and working with a Container Platform you would prefer this to be containerized too.
 OpenShift makes it easy to host for example a MySQL database with persistent storage mounted to it.
-Just like pods can move fluently between nodes in a cluster, Network Storage in the form of a Persistent Volume Claim (PVC) can move just as fluently with the pod.
+Just like pods can move fluently between nodes in a cluster, Network Storage in the form of a Persistent Volume Claim (PVC) can move just as fluently together with the pod.
 
-A Persistent Volume Claim (PVC) creates an abstraction between the consumer claiming storage space for his application, and the underlaying infrastructure technically providing the storage.
+A https://{{DOCS_URL}}/latest/architecture/additional_concepts/storage.html[Persistent Volume Claim (PVC)] creates an abstraction between the consumer claiming storage space for his application, and the underlaying infrastructure providing the storage.
 This way the consumer doesn't need to know the technical details and will instantly get a storage volume assigned based on his quota and availability from the pool of available storage volumes.
 
-The cluster-operator can integrate OpenShift with his existing SAN/NAS-infrastructure (like FibreChannel, NFS, iSCSI, Cinder, ...), or can run our unique Container Native Storage (CNS) that will run a Gluster Storage cluster natively in containers, thereby creating a Hyper-converged platform providing Storage, Networking, Compute, Security, ...
+The cluster-operator can integrate OpenShift with his existing SAN/NAS-infrastructure (like FibreChannel, NFS, iSCSI, Cinder, ...), or can run our unique https://docs.openshift.com/container-platform/3.5/install_config/persistent_storage/persistent_storage_glusterfs.html[Container Native Storage (CNS)] that will run a Gluster Storage cluster natively in containers, thereby creating a Hyper-converged platform providing Storage, Networking, Compute, Security, ...
 
 
 #### Exercise: Create Claim

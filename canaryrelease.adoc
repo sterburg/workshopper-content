@@ -2,6 +2,21 @@
 
 ### Background: Canary Release
 
+Each application has different requirements for availability (and other considerations) during deployments. 
+OpenShift Container Platform provides strategies to support a variety of deployment scenarios. 
+
+A https://{{DOCS_URL}}/latest/dev_guide/deployments/deployment_strategies.html#rolling-strategy[rolling] 
+deployment slowly replaces instances of the previous version of an application with instances of the new version of the application. 
+A rolling deployment typically waits for new pod to become ready via a readiness check before scaling down one of the old pods. 
+
+The https://{{DOCS_URL}}/latest/dev_guide/deployments/deployment_strategies.html#recreate-strategy[Recreate] 
+strategy has basic rollout behavior and supports lifecycle hooks for injecting code into the deployment process.
+This process will first bring down all old instances, then execute lifecycle hooks (e.g. database schema updates), 
+then start all new instances at once.
+
+In OpenShift Container Platform the rolling (canary) strategy is the default.
+
+
 #### Live Deployment
 
 The default behavior for OpenShift has every
@@ -54,8 +69,8 @@ image::pipeline-live-image.png[National Parks Image Stream]
 
 
 In order to deploy the "live" application all we need to do is trigger 
-this image-change by changing the image of the "live" tag.
-We do this by pointing the "live" tag to the "latest" builded image.
+its image-change event by changing the image with a "live" tag.
+We do this by pointing the "live" tag to the "latest" built image.
 
 [source]
 ----
@@ -64,17 +79,20 @@ oc tag nationalparks:latest nationalparks:live
 
 You should have seen a change on the *ImageStream* page in the UI.
 
-This command says "please use the existing image that the tag
-`nationalparks:latest` points to and also point it at `nationalparks:live`." Or,
-in other words "create a new tag (`live`) that points to whatever `latest`
-points to.
-
 While _new_ builds will update the `latest` tag, only a manual command (or an
 automated workflow, like we will implement with Jenkins) will update the `live`
 tag. The `live` tag keeps referring to the pervious Docker image and therefore
 leaves the *Live* environment intact.
 
-#### Exercise: TBD
+#### A/B Testing
+
+By deploying the new image to production you have completely retired the old version and everyone is served the new version.
+Perhaps this is not what you want, but you want to slowly introduce the new feature and monitor the business impact.
+OpenShift Container Platform supports A/B Testing by creating one route (url) that can route to two different services. 
+You can then slowly increate the percentage of routing to the new version.
+
+
+#### Exercise:
 
 Go to *Applications* -> *Routes* and click on `nationalparks-live`. Edit the route
 
