@@ -71,9 +71,17 @@ but not edit) might be ideal for a developer getting visibility into a
 production application's project.
 
 To see a list of all roles you can assign:
+
 [source,role=copypaste]
 ----
 oc get clusterroles
+----
+
+To see details of a specific permissions for a role you can:
+
+[source,role=copypaste]
+----
+oc describe clusterroles/view
 ----
 
 ### Exercise: Redeploy Application

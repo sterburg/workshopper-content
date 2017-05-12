@@ -46,14 +46,57 @@ We should now see our MongoDB startup with persistent storage.
 We can validate this by looking at the mount points inside the container:
 
 ```
-oc rsh dc/mongo mount |grep /var/lib/mongodb/data
+oc rsh dc/mongodb mount |grep /var/lib/mongodb/data
 ```
 
 if we kill and restart the container the data was persisted before and is still available.
 
 ```
-oc rsh dc/mongo touch /var/lib/mongodb/data/{{USER_NAME}}-was-here
-oc rsh dc/mongo ls /var/lib/mongodb/data
+oc rsh dc/mongodb touch /var/lib/mongodb/data/{{USER_NAME}}-was-here
+oc rsh dc/mongodb ls /var/lib/mongodb/data
 oc delete pod -l app=mongodb
-oc rsh dc/mongo ls /var/lib/mongodb/data
+oc rsh dc/mongodb ls /var/lib/mongodb/data
 ```
+
+#### Exercise: Where has my data gone?
+
+As we have made the database persistent, we can again visit the `nationalparks` web
+service to query for data:
+
+[source]
+----
+http://nationalparks-{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}.{{ROUTER_ADDRESS}}/ws/data/all
+----
+
+And the result?
+
+[source]
+----
+[]
+----
+
+Where's the data? Think about the process you went through. You deployed the
+the database, loaded the data, and changed the database location into a Persistent Volume. 
+The data that you loaded is gone. 
+
+Let's load the data back again. As we described before, the application provides an endpoint to do just that:
+
+[source]
+----
+http://nationalparks-{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}.{{ROUTER_ADDRESS}}/ws/data/load
+----
+
+And the result?
+
+[source]
+----
+Items inserted in database: 2740
+----
+
+If you then go back to `/ws/data/all` you will see tons of JSON data now.
+That's great. Our parks map will work again!
+
+[source]
+----
+http://parksmap-{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}.{{ROUTER_ADDRESS}}
+----

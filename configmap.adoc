@@ -89,6 +89,10 @@ metadata:
   uid: 6f4536cf-abdd-11e6-9282-525400c3c0db
 ----
 
+Or though the web console:
+
+image::nationalparks-configmap.png[ConfigMap]
+
 #### Exercise: Wire the ConfigMap inside nationalparks Container
 
 Configuration data can be consumed in pods in a variety of ways. A `ConfigMap`
