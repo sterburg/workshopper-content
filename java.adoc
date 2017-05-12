@@ -117,6 +117,9 @@ process to grab that specific tag in the code repository.
 
 image::nationalparks-tag.png[Runtimes]
 
+WARNING: Verify that the version used is the one in the text, 
+not the one in the image as it might be different.
+
 {% if USE_MAVEN %}
 
 To speed build process, a Sonatype Nexus server is running in the environment

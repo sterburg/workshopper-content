@@ -6,6 +6,8 @@ content:
   url: https://raw.githubusercontent.com/sterburg/workshopper-content/master
 
 vars:
+  CONSOLE_ADDRESS: "ose-api-2035007264.eu-west-1.elb.amazonaws.com:8443"
+  ROUTER_ADDRESS: "workshop.openshift.eu"
   ENVIRONMENT: "Azure"
   USE_MAVEN: false
   METRICS_ENABLED: true
@@ -15,7 +17,7 @@ vars:
   ETHERPAD_URL_PREFIX: "etherpad-workshop-infra"
   MASTERS: "3"
   INFRA: "3"
-  NODES: "3"
+  NODES: "22"
   NUM_USERS: "200"
   DOCS_URL: "docs.openshift.com/container-platform"
   SUFFIX: "XXX"
@@ -46,10 +48,11 @@ modules:
   - explore
   - docker
   - scaling
+  - quotas
   - routes
   - permissions
   - java
-  - quotas
+  - application-health  
   - databases
   - storage 
   - configmap
@@ -57,3 +60,4 @@ modules:
   - templates
   - canaryrelease
   - pipelines
+  - further-resources

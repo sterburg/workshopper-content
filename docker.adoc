@@ -32,6 +32,9 @@ Your screen will end up looking something like this:
 
 image::parksmap-image.png[Explore Project]
 
+WARNING: Verify that the version used is the one in the text, 
+not the one in the image as it might be different.
+
 Either press *enter* or click on the magnifying glass. OpenShift will then go
 out to the Docker registry specified and interrogate the image. You then are
 presented with some options to add things like environment variables, labels,
@@ -62,7 +65,7 @@ In the web console's overview page you will see that there is a single *Pod* tha
 was created by your actions. This *Pod* contains a single container, which
 happens to be the parks map application - a simple Spring Boot/Java application.
 
-TODO: screenshot of webconsole pod page here.
+image::parksmap-app.png[Parksmap application]
 
 You can also examine *Pods* from the command line:
 
