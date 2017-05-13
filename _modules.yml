@@ -38,7 +38,7 @@ config:
       value: false
     - name: ETHERPAD_URL_PREFIX
       desc: Ethepad's URL prefix (<appname>-<project>)
-      value: etherpad-workshop-infra
+      value: etherpad
     - name: DOWNLOAD_CLIENT_WINDOWS
       desc: URL to download oc client for Windows
       value: "https://github.com/openshift/origin/releases/download/v1.5.0/openshift-origin-client-tools-v1.5.0-031cbe4-windows.zip"
