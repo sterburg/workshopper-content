@@ -52,7 +52,7 @@ the source code repository. Execute the following command:
 {% if PARKSMAP_PY %}
 oc create -f https://raw.githubusercontent.com/openshift-roadshow/mlbparks-py/{{MLBPARKS_VERSION}}/ose3/application-template.json
 {% else %}
-oc create -f https://raw.githubusercontent.com/openshift-roadshow/mlbparks/{{MLBPARKS_VERSION}}/ose3/application-template-{{MW_NAME}}.json
+oc create -f https://raw.githubusercontent.com/openshift-roadshow/mlbparks/{{MLBPARKS_VERSION}}/ose3/deployment-template-{{MW_NAME}}.json
 {% endif %}
 ----
 
