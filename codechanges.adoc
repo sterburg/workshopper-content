@@ -16,7 +16,7 @@ In previous labs, you created a CI/CD Pipeline to automate build, test and deplo
 the `nationalparks` application. In this lab you can use the pipline webhook to
 trigger a pipeline execution every time there is a change in the `nationalparks` GitLab
 repository. In the OpenShift web console, navigate to your `{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}` *Project*, and
-then mouse-over *Browse* and then *Pipelines*. Click the `nationalparks-pipeline` and
+then click *Browse* and then *Pipelines*. Click the `nationalparks-pipeline` and
 then *Configuration* tab.
 
 On this screen you will see the option to copy the *generic* webhook URL as shown
@@ -25,7 +25,7 @@ in the following image:
 image::ocp-webhook1-pipeline.png[Webhook]
 {% else %}
 In the OpenShift web console, navigate to your `{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}` *Project*, and
-then mouse-over *Browse* and then *Builds*. Click the `nationalparks` build.
+then click *Browse* and then *Builds*. Click the `nationalparks` build.
 
 On this screen you will see the option to copy the *generic* webhook URL as shown
 in the following image:
@@ -200,7 +200,7 @@ You should now see the new name you have set in the JSON string returned.
 OpenShift allows you to move between different versions of an application
 without the need to rebuild each time. Every version (past builds) of the
 application exists as a Docker-formatted image in the OpenShift registry. Using
-the `oc rollback` and `oc deploy` commands you can move back- or forward between
+the `oc rollout undo --to-revision=X` and `oc rollout latest` commands you can move back- or forward between
 various versions of applications.
 
 In order to perform a rollback, you need to know the name of the *Deployment Config*
@@ -230,14 +230,14 @@ Now run the following command to rollback the latest code change:
 
 [source]
 ----
-oc rollback nationalparks
+oc rollout undo dc/nationalparks
 ----
 
 You will see output like the following:
 
 [source]
 ----
-#5 rolled back to nationalparks-3
+deploymentconfig "nationalparks" rolled back
 ----
 
 Once the deploy is complete, verify that the page header is reverted to the
@@ -256,7 +256,7 @@ the automatic deployments run this:
 
 [source]
 ----
-oc deploy nationalparks-live --enable-triggers
+oc deploy nationalparks --enable-triggers
 ----
 ====
 

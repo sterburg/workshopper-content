@@ -30,6 +30,8 @@ incremental builds which re-use previously downloaded dependencies, previously
 built artifacts, etc.
 ----
 
+image::s2i-walkthrough.png[S2I Walkthrough]
+
 OpenShift is S2I-enabled and can use S2I as one of its build mechanisms (in
 addition to building Docker images from Dockerfiles, and "custom" builds).
 

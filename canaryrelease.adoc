@@ -21,8 +21,7 @@ In OpenShift Container Platform the rolling (canary) strategy is the default.
 
 The default behavior for OpenShift has every
 https://{{DOCS_URL}}/latest/architecture/core_concepts/builds_and_image_streams.html[build] 
-creating a new Docker image that is pushed into the internal registry,
-set with the `latest` tag. Since we do not want to immediately run or
+creating a new Docker image set with the `latest` tag. Since we do not want to immediately run or
 deploy the *Live* version of `nationalparks` when the image changes, we want the
 ability for the *Dev* and *Live* deployments to run different versions of the
 `nationalparks` image simultaneously. This will allow developers to continue

@@ -4,7 +4,7 @@
 
 Most applications require configuration using environment variables,
 configuration files and command line arguments. These configuration artifacts
-should be externalized form the application and the docker image content in
+should be externalized from the application and the docker image content in
 order to keep the image portable across environments.
 
 In link:databases[previous labs], the `nationalparks` application was configured
