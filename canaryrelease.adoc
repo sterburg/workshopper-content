@@ -27,7 +27,7 @@ ability for the *Dev* and *Live* deployments to run different versions of the
 `nationalparks` image simultaneously. This will allow developers to continue
 changing and deploying *Dev* without affecting the *Live* environment. 
 
-We've used the template parameter APPLICATION_STAGE=live at our new-app creation.
+We've used the template parameter APPLICATION_STAGE=live at our new-app creation in the link:templates[previous labs].
 This created a Deployment with a trigger based on image changes on only the "live" tag.
 
 [source]
@@ -118,7 +118,7 @@ Test the route
 
 [source]
 ----
-for i in {1..10}; do curl http://nationalparks-live.{{ROUTER_ADDRESS}}/ws/info/ ; echo "" ; done
+for i in {1..10}; do curl nationalparks-live-explore-XXX.{{ROUTER_ADDRESS}}/ws/info/ ; echo "" ; done
 ----
 
 

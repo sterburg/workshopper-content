@@ -76,8 +76,8 @@ You will see output like the following:
 
 [source]
 ----
-{% if PARKSMAP_PY %}
 NAME            DESCRIPTION                                                                        PARAMETERS     OBJECTS
+{% if PARKSMAP_PY %}
 nationalparks   Application template NationalParks backend running on SpringBoot and using mo...   15 (5 blank)   5
 {% else %}
 nationalparks   Application template NationalParks backend running on SpringBoot and using mo...   15 (5 blank)   5
