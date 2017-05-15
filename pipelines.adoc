@@ -67,8 +67,8 @@ deployed container.
 
 image::pipeline-jenkins-pods.png[Jenkins Pods]
 
-Click on the Jenkins route in order to open the Jenkins Console. You will again
-need to accept the certificate. The Jenkins image that is provided by Red Hat
+Click on the Jenkins route in order to open the Jenkins Console. 
+The Jenkins image that is provided by Red Hat
 uses an OAuth integration with OpenShift. Your OpenShift user credentials also
 become the admin credentials for Jenkins:
 

@@ -21,18 +21,18 @@ In OpenShift Container Platform the rolling (canary) strategy is the default.
 
 The default behavior for OpenShift has every
 https://{{DOCS_URL}}/latest/architecture/core_concepts/builds_and_image_streams.html[build] 
-creating a new Docker image set with the `latest` tag. Since we do not want to immediately run or
-deploy the *Live* version of `nationalparks` when the image changes, we want the
+creating a new Docker image with the `latest` tag set. Since we do not want to immediately run or
+deploy the *Live* version of `nationalparks` when the `latest` image changes, we want the
 ability for the *Dev* and *Live* deployments to run different versions of the
 `nationalparks` image simultaneously. This will allow developers to continue
 changing and deploying *Dev* without affecting the *Live* environment. 
 
-We've used the template parameter APPLICATION_STAGE=live at our new app creation.
-This created a Deployment that is triggered based on image changes on only the "live" tag.
+We've used the template parameter APPLICATION_STAGE=live at our new-app creation.
+This created a Deployment with a trigger based on image changes on only the "live" tag.
 
 [source]
 ----
-oc get template mlbparks -o yaml
+oc get template nationalparks -o yaml
     {
       "kind": "DeploymentConfig"
       "spec": {
@@ -67,13 +67,15 @@ Docker image created in link:java[previous labs]. Click on *Builds* &rarr;
 image::pipeline-live-image.png[National Parks Image Stream]
 
 
-In order to deploy the "live" application all we need to do is trigger 
-its image-change event by changing the image with a "live" tag.
-We do this by pointing the "live" tag to the "latest" built image.
+In order to deploy the `live` application all we need to do is trigger 
+its image-change event by tagging the image with a `live` tag.
+We will point this `live` tag to an earlier image version that we've deemed 'OK'.
+In our case the version we build before we made the code change earlier.
 
 [source]
 ----
-oc tag nationalparks:latest nationalparks:live
+oc describe is/nationalparks
+oc tag nationalparks@sha256... nationalparks:live
 ----
 
 You should have seen a change on the *ImageStream* page in the UI.
@@ -81,14 +83,16 @@ You should have seen a change on the *ImageStream* page in the UI.
 While _new_ builds will update the `latest` tag, only a manual command (or an
 automated workflow, like we will implement with Jenkins) will update the `live`
 tag. The `live` tag keeps referring to the pervious Docker image and therefore
-leaves the *Live* environment intact.
+leaves the *Live* environment intact from *Dev* changes.
 
 #### A/B Testing
 
-By deploying the new image to production you have completely retired the old version and everyone is served the new version.
-Perhaps this is not what you want, but you want to slowly introduce the new feature and monitor the business impact.
-OpenShift Container Platform supports A/B Testing by creating one route (url) that can route to two different services. 
-You can then slowly increate the percentage of routing to the new version.
+By deploying the new image to production you have completely retired the old 
+version and all visitors are served the new version. Perhaps this is not what 
+you want, but you want to slowly introduce the new feature and monitor the 
+business impact. OpenShift Container Platform supports A/B Testing by creating 
+one route (url) that can route to two different services. 
+You can then slowly increase the percentage of routing to the new version.
 
 
 #### Exercise:
