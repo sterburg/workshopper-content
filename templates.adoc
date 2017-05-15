@@ -37,22 +37,28 @@ resources together.
 
 #### Exercise: Instantiate a Template
 
-The front end application we've been working with this whole time will display
-as many back end services' data as are created. Adding more stuff with the right
-*Label* will make more stuff show up on the map.
+We've deployed our Nationalparks application in our development environment.
+Now we would like to deploy the same stack into production.
+We don't want to repeat ourselves, so we've created a Template of our stack.
 
-Now you will deploy a map of Major League Baseball stadiums in the US by using a
-template. It is pre-configured to build the back end Java application, and
-deploy the Mongo database. It also uses a *Hook* to call the `/ws/data/load`
-endpoint to cause the data to be loaded into the database from a JSON file in
-the source code repository. Execute the following command:
+Deploy the template with a suffix "-live" to differentiate the Dev & Live stacks.
+
+[NOTE]
+====
+A better solution would be to create seperate projects for the different
+application lifecycle stages (Dev, Test, Acc, Prod).
+But after all, this is just a workshop.
+
+It also uses a *Hook* to call the `/ws/data/load` endpoint to cause the data 
+to be loaded into the database from a JSON file in the source code repository. 
+Execute the following command:
 
 [source]
 ----
 {% if PARKSMAP_PY %}
-oc create -f https://raw.githubusercontent.com/openshift-roadshow/mlbparks-py/{{MLBPARKS_VERSION}}/ose3/application-template.json
+oc create -f https://raw.githubusercontent.com/openshift-roadshow/nationalparks/{{NATIONALPARKS_VERSION}}/ose3/deployment-template.json
 {% else %}
-oc create -f https://raw.githubusercontent.com/openshift-roadshow/mlbparks/{{MLBPARKS_VERSION}}/ose3/deployment-template-{{MW_NAME}}.json
+oc create -f https://raw.githubusercontent.com/openshift-roadshow/nationalparks/{{NATIONALPARKS_VERSION}}/ose3/deployment-template.json
 {% endif %}
 ----
 
@@ -70,10 +76,10 @@ You will see output like the following:
 [source]
 ----
 {% if PARKSMAP_PY %}
-NAME          DESCRIPTION                                                                      PARAMETERS     OBJECTS
-mlbparks-py   Application template MLB Parks backend running on Python/Flask and using mongodb 14 (4 blank)   8
+NAME            DESCRIPTION                                                                        PARAMETERS     OBJECTS
+nationalparks   Application template NationalParks backend running on SpringBoot and using mo...   15 (5 blank)   5
 {% else %}
-mlbparks      Application template MLBParks backend running on {{MW_TEXT}} and using MongoDB   15 (5 blank)   8
+nationalparks   Application template NationalParks backend running on SpringBoot and using mo...   15 (5 blank)   5
 {% endif %}
 ----
 
@@ -82,148 +88,60 @@ Are you ready for the magic command?  Here it is:
 {% if USE_MAVEN %}
 [source]
 ----
-oc new-app mlbparks --name=mlbparks -p APPLICATION_STAGE=live -p GIT_REF={{MLBPARKS_VERSION}} -p MAVEN_MIRROR_URL=http://nexus.workshop-infra.svc.cluster.local:8081/content/groups/public
+oc new-app --template=nationalparks -p APPLICATION_STAGE=live 
 ----
 
 {% else %}
 [source]
 ----
 {% if PARKSMAP_PY %}
-oc new-app mlbparks-py -p APPLICATION_NAME=mlbparks -p APPLICATION_STAGE=live -p GIT_URI=https://github.com/openshift-roadshow/mlbparks-py -p GIT_REF={{MLBPARKS_VERSION}}
+oc new-app --template=nationalparks -p APPLICATION_STAGE=live 
 {% else %}
-oc new-app mlbparks -p APPLICATION_NAME=mlbparks -p APPLICATION_STAGE=live -p GIT_REF={{MLBPARKS_VERSION}}
+oc new-app --template=nationalparks -p APPLICATION_STAGE=live 
 {% endif %}
 ----
 {% endif %}
 
 You will see the following output:
 
-{% if USE_MAVEN %}
 [source]
 ----
---> Deploying template mlbparks
+--> Deploying template "explore-000/nationalparks" to project explore-000
 
-     mlbparks
+     nationalparks
      ---------
-     Application template MLBParks backend running on {{MW_TEXT}} and using MongoDB
+     Application template NationalParks backend running on SpringBoot and using mongodb
 
      * With parameters:
-        * Application Name=mlbparks
+        * Application Name=nationalparks
+        * Application Lifecycle stage=live
         * Application route=
-        * Mongodb App=mongodb-mlbparks
-        * Git source repository=https://github.com/openshift-roadshow/mlbparks
-        * Git branch/tag reference={{MLBPARKS_VERSION}}
-        * Maven mirror url=http://nexus.workshop-infra.svc.cluster.local:8081/content/groups/public
+        * Mongodb App=mongodb
+        * Git source repository=https://github.com/openshift-roadshow/nationalparks.git
+        * Git branch/tag reference=master
+        * Maven mirror url=
         * Database name=mongodb
         * MONGODB_NOPREALLOC=
         * MONGODB_SMALLFILES=
         * MONGODB_QUIET=
-        * Database user name=userGhR # generated
-        * Database user password=KhnHKCQI # generated
-        * Database admin password=UyUV6ReU # generated
-        * GitHub Trigger=dAOuD7s4 # generated
-        * Generic Trigger=tWSkmNLn # generated
+        * Database user name=mongodb
+        * Database user password=mongodb
+        * Database admin password=mongodb
+        * GitHub Trigger=C3fbvG5y # generated
+        * Generic Trigger=EsDsBag0 # generated
 
 --> Creating resources ...
-    configmap "mlbparks" created
-    service "mongodb-mlbparks" created
-    deploymentconfig "mongodb-mlbparks" created
-    imagestream "mlbparks" created
-    buildconfig "mlbparks" created
-    deploymentconfig "mlbparks" created
-    service "mlbparks" created
-    route "mlbparks" created
+    service "mongodb-live" created
+    deploymentconfig "mongodb-live" created
+    deploymentconfig "nationalparks-live" created
+    service "nationalparks-live" created
+    route "nationalparks-live" created
 --> Success
-    Build scheduled, use 'oc logs -f bc/mlbparks' to track its progress.
     Run 'oc status' to view your app.
 ----
-{% else %}
-{% if PARKSMAP_PY %}
-[source]
-----
---> Deploying template "{{USER_NAME}}/mlbparks-py" to project {{USER_NAME}}
-
-     mlbparks-py
-     ---------
-     Application template MLB Parks backend running on Python/Flask and using mongodb
-
-     * With parameters:
-        * Application Name=mlbparks
-        * Application route=
-        * Mongodb App=mongodb-mlbparks
-        * Git source repository=https://github.com/openshift-roadshow/mlbparks-py
-        * Git branch/tag reference=1.0.0
-        * Database name=mongodb
-        * MONGODB_NOPREALLOC=
-        * MONGODB_SMALLFILES=
-        * MONGODB_QUIET=
-        * Database user name=userxmt # generated
-        * Database user password=lk8hYPOe # generated
-        * Database admin password=uuvr7vRG # generated
-        * GitHub Trigger=hbJ8Fdw7 # generated
-        * Generic Trigger=ho4s1c6f # generated
-
---> Creating resources ...
-    configmap "mlbparks" created
-    service "mongodb-mlbparks" created
-    deploymentconfig "mongodb-mlbparks" created
-    imagestream "mlbparks" created
-    buildconfig "mlbparks" created
-    deploymentconfig "mlbparks" created
-    service "mlbparks" created
-    route "mlbparks" created
---> Success
-    Build scheduled, use 'oc logs -f bc/mlbparks' to track its progress.
-    Run 'oc status' to view your app.
-----
-{% else %}
-[source]
-----
---> Deploying template mlbparks
-
-     mlbparks
-     ---------
-     Application template MLBParks backend running on {{MW_TEXT}} and using MongoDB
-
-     * With parameters:
-        * Application Name=mlbparks
-        * Application route=
-        * Mongodb App=mongodb-mlbparks
-        * Git source repository=https://github.com/openshift-roadshow/mlbparks
-        * Git branch/tag reference={{MLBPARKS_VERSION}}
-        * Database name=mongodb
-        * MONGODB_NOPREALLOC=
-        * MONGODB_SMALLFILES=
-        * MONGODB_QUIET=
-        * Database user name=userGhR # generated
-        * Database user password=KhnHKCQI # generated
-        * Database admin password=UyUV6ReU # generated
-        * GitHub Trigger=dAOuD7s4 # generated
-        * Generic Trigger=tWSkmNLn # generated
-
---> Creating resources ...
-    configmap "mlbparks" created
-    service "mongodb-mlbparks" created
-    deploymentconfig "mongodb-mlbparks" created
-    imagestream "mlbparks" created
-    buildconfig "mlbparks" created
-    deploymentconfig "mlbparks" created
-    service "mlbparks" created
-    route "mlbparks" created
---> Success
-    Build scheduled, use 'oc logs -f bc/mlbparks' to track its progress.
-    Run 'oc status' to view your app.
-----
-{% endif %}
-{% endif %}
 
 OpenShift will now:
 
-* Configure and start a build
-{% if USE_MAVEN %}
-** Using the supplied Maven mirror URL
-{% endif %}
-** From the supplied source code repository
 * Configure and deploy MongoDB
 ** Using auto-generated user, password, and database name
 * Configure environment variables for the app to connect to the DB
@@ -240,14 +158,14 @@ resources with one command, and then hack on them to develop new features,
 microservices, fix bugs, and more.
 
 As a last exercise, look at the template that was used to create the
-resources for our *mlbparks* application.
+resources for our *nationalparks-live* application.
 
 [source]
 ----
 {% if PARKSMAP_PY %}
-oc get template mlbparks-py -o yaml
+oc get template nationalparks -o yaml
 {% else %}
-oc get template mlbparks -o yaml
+oc get template nationalparks -o yaml
 {% endif %}
 ----
 
@@ -267,4 +185,8 @@ oc label route nationalparks type-
 oc label route nationalparks-live type=parksmap-backend
 ----
 
+#### Tag to deploy
+
+Notice that the `nationalparks-live` hasn't started a deployment.
+This is because there are no images tagged with our `${APPLICATION_STAGE}` (live).
 

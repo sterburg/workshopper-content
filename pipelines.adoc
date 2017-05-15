@@ -21,7 +21,7 @@ diagram shows the pipeline you will create in this lab.
 image::pipeline-diagram.png[CI/CD Pipeline Diagram,800,align="center"]
 
 There are two environments for the `nationalparks` application in this pipeline.
-*Dev* container is the for development and test purposes where all code and
+*Dev* container is for development and test purposes where all code and
 configuration changes are deployed so that you can run automated tests against it.
 Furthermore, the test teams can run their manual tests on this container and
 report any bugs discovered through their test cases. If the tests are all successful
