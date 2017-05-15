@@ -1,4 +1,4 @@
-oc new-project workshop
+#oc new-project workshop
 
 # Generated artifact is located in /wildfly/standalone/deployments/ROOT.war
 oc new-build --name=workshop \
