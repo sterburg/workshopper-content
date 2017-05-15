@@ -7,7 +7,7 @@ be wired together and described as a backend for the map visualization tool, so
 that once the application is build and deployed, you will be able to see the new
 map.
 
-image::roadshow-app-architecture-mlbparks.png[Application architecture,800,align="center"]
+image::roadshow-app-architecture-nationalparks-2.png[Application architecture,800,align="center"]
 
 ### Background: Templates
 Running all these individual commands can be tedious and error prone.
@@ -48,6 +48,7 @@ Deploy the template with a suffix "-live" to differentiate the Dev & Live stacks
 A better solution would be to create seperate projects for the different
 application lifecycle stages (Dev, Test, Acc, Prod).
 But after all, this is just a workshop.
+====
 
 It also uses a *Hook* to call the `/ws/data/load` endpoint to cause the data 
 to be loaded into the database from a JSON file in the source code repository. 
