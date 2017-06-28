@@ -1,0 +1,63 @@
+---
+id: paris
+name: DevOpsDays
+
+content:
+  url: https://raw.githubusercontent.com/sterburg/workshopper-content/master
+
+vars:
+  CONSOLE_ADDRESS: "openshift.eu"
+  ROUTER_ADDRESS: "openshift.eu"
+  ENVIRONMENT: "Azure"
+  USE_MAVEN: false
+  METRICS_ENABLED: true
+  LOGGING_ENABLED: true
+  NFS_ENABLED: true
+  ETHERPAD_ENABLED: true
+  ETHERPAD_URL_PREFIX: "etherpad"
+  MASTERS: "3"
+  INFRA: "3"
+  NODES: "16"
+  NUM_USERS: "200"
+  DOCS_URL: "docs.openshift.com/container-platform"
+  SUFFIX: "XXX"
+  USER_SUFFIX: "-XXX"
+  OPENSHIFT_NAME: "OpenShift Container Platform"
+  OPENSHIFT_SHORTNAME: "OCP"
+  OPENSHIFT_VERSION: "3.5"
+  GITLAB_USER: "userXXX"
+  GITLAB_PASSWORD: "openshift3"
+  GITLAB_URL_PREFIX: "gitlab"
+  JAVA_BUILDER_PROPER: "JBoss EAP 7"
+  JAVA_BUILDER_STRING: "jboss-eap70-openshift:1.4"
+  USER_NAME: "userXXX"
+  USER_PASSWORD: "openshift3"
+  PARKSMAP_IMAGENAME: "parksmap"
+  PARKSMAP_VERSION: "1.2.0"
+  PARKSMAP_PY: false
+  NATIONALPARKS_VERSION: "1.2.1"
+  MLBPARKS_VERSION: "1.0.0"
+  EXPLORE_PROJECT_NAME: "explore"
+  DISABLE_NATIONALPARKS_DEPLOYMENT_PIPELINE: false
+  MW_NAME: "eap"
+
+modules:
+  activate:
+  - environment
+  - install
+  - explore
+  - docker
+  - scaling
+  - quotas
+  - routes
+  - permissions
+  - java
+  - application-health  
+  - databases
+  - storage 
+  - configmap
+  - codechanges
+  - templates
+  - canaryrelease
+  - pipelines
+  - further-resources

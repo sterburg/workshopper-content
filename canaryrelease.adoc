@@ -2,11 +2,100 @@
 
 ### Background: Canary Release
 
+Each application has different requirements for availability (and other considerations) during deployments. 
+OpenShift Container Platform provides strategies to support a variety of deployment scenarios. 
 
-#### Exercise: TBD
+A https://{{DOCS_URL}}/latest/dev_guide/deployments/deployment_strategies.html#rolling-strategy[rolling] 
+deployment slowly replaces instances of the previous version of an application with instances of the new version of the application. 
+A rolling deployment typically waits for new pod to become ready via a readiness check before scaling down one of the old pods. 
 
-Got to GitLab and change "National Parks" name to "National Parks Geo" in `src/main/java/com/openshift/evg/roadshow/parks/rest/BackendController.java`.
-Commit the change to trigger the pipeline and wait at "Input Required" in pipeline
+The https://{{DOCS_URL}}/latest/dev_guide/deployments/deployment_strategies.html#recreate-strategy[Recreate] 
+strategy has basic rollout behavior and supports lifecycle hooks for injecting code into the deployment process.
+This process will first bring down all old instances, then execute lifecycle hooks (e.g. database schema updates), 
+then start all new instances at once.
+
+In OpenShift Container Platform the rolling (canary) strategy is the default.
+
+
+#### Live Deployment
+
+The default behavior for OpenShift has every
+https://{{DOCS_URL}}/latest/architecture/core_concepts/builds_and_image_streams.html[build] 
+creating a new Docker image with the `latest` tag set. Since we do not want to immediately run or
+deploy the *Live* version of `nationalparks` when the `latest` image changes, we want the
+ability for the *Dev* and *Live* deployments to run different versions of the
+`nationalparks` image simultaneously. This will allow developers to continue
+changing and deploying *Dev* without affecting the *Live* environment. 
+
+We've used the template parameter APPLICATION_STAGE=live at our new-app creation in the link:templates[previous labs].
+This created a Deployment with a trigger based on image changes on only the "live" tag.
+
+[source]
+----
+oc get template nationalparks -o yaml
+    {
+      "kind": "DeploymentConfig"
+      "spec": {
+        "triggers": [
+          {
+            "type": "ImageChange",
+            "imageChangeParams": {
+              "from": {
+                "kind": "ImageStreamTag",
+                "name": "${APPLICATION_NAME}:${APPLICATION_STAGE}"
+              }
+            }
+          }
+        "template": {
+          "spec": {
+            "containers": [
+              {
+                "name": "${APPLICATION_NAME}-${APPLICATION_STAGE}",
+                "image": "${APPLICATION_NAME}:${APPLICATION_STAGE}"
+              }
+            ]
+        }
+      }
+    }
+----
+
+
+We've created the *Live* environment based on the same `nationalparks`
+Docker image created in link:java[previous labs]. Click on *Builds* &rarr;
+*Images* and then `nationalparks` to inspect the *ImageStream*.
+
+image::pipeline-live-image.png[National Parks Image Stream]
+
+
+In order to deploy the `live` application all we need to do is trigger 
+its image-change event by tagging the image with a `live` tag.
+We will point this `live` tag to an earlier image version that we've deemed 'OK'.
+In our case the version we build before we made the code change earlier.
+
+[source]
+----
+oc describe is/nationalparks
+oc tag nationalparks@sha256... nationalparks:live
+----
+
+You should have seen a change on the *ImageStream* page in the UI.
+
+While _new_ builds will update the `latest` tag, only a manual command (or an
+automated workflow, like we will implement with Jenkins) will update the `live`
+tag. The `live` tag keeps referring to the pervious Docker image and therefore
+leaves the *Live* environment intact from *Dev* changes.
+
+#### A/B Testing
+
+By deploying the new image to production you have completely retired the old 
+version and all visitors are served the new version. Perhaps this is not what 
+you want, but you want to slowly introduce the new feature and monitor the 
+business impact. OpenShift Container Platform supports A/B Testing by creating 
+one route (url) that can route to two different services. 
+You can then slowly increase the percentage of routing to the new version.
+
+
+#### Exercise:
 
 Go to *Applications* -> *Routes* and click on `nationalparks-live`. Edit the route
 
@@ -29,11 +118,10 @@ Test the route
 
 [source]
 ----
-for i in {1..10}; do curl http://nationalparks-live-demo.10.2.2.15.xip.io/ws/info/ ; echo "" ; done
+for i in {1..10}; do curl nationalparks-live-explore-XXX.{{ROUTER_ADDRESS}}/ws/info/ ; echo "" ; done
 ----
 
 
 Open parksmap in Chrome > Incognito or Firefox > New Private Window in order to disable caching. Refresh
 the page a few times and you should see every few requests the name of nationalparks in the right top menu changes.
 
-When happy with the change, go to pipeline and click on promote to deploy the change in the live environment.

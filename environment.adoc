@@ -25,6 +25,9 @@ The infrastructure node is providing several services:
 * Etherpad
 {% endif %}
 
+image::ocp-infra.png[OpenShift Container Platform - Infrastructure]
+
+
 Additionally, {{ NUM_USERS }} user accounts have been provisioned.
 
 {% if ETHERPAD_ENABLED %}
@@ -39,7 +42,7 @@ account and your name next to it. This will be your user account for the
 duration of these exercises. For example:
 
 ----
-userxx Luke Skywalker
+userXXX Luke Skywalker
 ----
 
 If you already see a name next to a user account, it means that someone else has
@@ -54,5 +57,5 @@ a substitution of your username or user number:
 
 [source,role=copypaste]
 ----
-some command for userXX
+some command for userXXX
 ----
