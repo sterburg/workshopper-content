@@ -11,12 +11,12 @@ achieved.
 #### Exercise: Configuring GitLab Web Hooks
 
 
-{% if modules.pipelines %}
+{% if modules.pipelines_first %}
 In previous labs, you created a CI/CD Pipeline to automate build, test and deployment of
 the `nationalparks` application. In this lab you can use the pipline webhook to
 trigger a pipeline execution every time there is a change in the `nationalparks` GitLab
 repository. In the OpenShift web console, navigate to your `{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}` *Project*, and
-then mouse-over *Browse* and then *Pipelines*. Click the `nationalparks-pipeline` and
+then click *Browse* and then *Pipelines*. Click the `nationalparks-pipeline` and
 then *Configuration* tab.
 
 On this screen you will see the option to copy the *generic* webhook URL as shown
@@ -25,7 +25,7 @@ in the following image:
 image::ocp-webhook1-pipeline.png[Webhook]
 {% else %}
 In the OpenShift web console, navigate to your `{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}` *Project*, and
-then mouse-over *Browse* and then *Builds*. Click the `nationalparks` build.
+then click *Browse* and then *Builds*. Click the `nationalparks` build.
 
 On this screen you will see the option to copy the *generic* webhook URL as shown
 in the following image:
@@ -147,7 +147,7 @@ return new Backend("nationalparks","OpenShift National Parks", new Coordinates("
 Click on Commit changes at the bottom of the screen. Feel free to enter a commit
 message.
 
-{% if modules.pipelines %}
+{% if modules.pipelines_first %}
 
 Once you have committed your changes, the `nationalparks-pipeline` should almost
 instantaneously be triggered in OpenShift. Look at the *Builds* &rarr; *Pipelines*
@@ -200,7 +200,7 @@ You should now see the new name you have set in the JSON string returned.
 OpenShift allows you to move between different versions of an application
 without the need to rebuild each time. Every version (past builds) of the
 application exists as a Docker-formatted image in the OpenShift registry. Using
-the `oc rollback` and `oc deploy` commands you can move back- or forward between
+the `oc rollout undo --to-revision=X` and `oc rollout latest` commands you can move back- or forward between
 various versions of applications.
 
 In order to perform a rollback, you need to know the name of the *Deployment Config*
@@ -211,8 +211,6 @@ which has deployed the application:
 $ oc get dc
 ----
 
-// TODO: Need non-pipeline version
-
 The output will be similar to the following:
 
 [source]
@@ -220,13 +218,11 @@ The output will be similar to the following:
 NAME                 REVISION   DESIRED   CURRENT   TRIGGERED BY
 jenkins              1          1         1         config,image(jenkins:latest)
 mongodb              1          1         1         config,image(mongodb:3.2)
-mongodb-live         1          1         1         config,image(mongodb:3.2)
-{% if modules.pipelines %}
+{% if modules.pipelines_first %}
 nationalparks        9          1         1         config
 {% else %}
 nationalparks        9          1         1         config,image(nationalparks:latest)
 {% endif %}
-nationalparks-live   4          1         1         config,image(nationalparks:live)
 parksmap             2          1         1         config,image(parksmap:{{PARKSMAP_VERSION}})
 ----
 
@@ -234,16 +230,14 @@ Now run the following command to rollback the latest code change:
 
 [source]
 ----
-oc rollback nationalparks-live
+oc rollout undo dc/nationalparks
 ----
 
 You will see output like the following:
 
 [source]
 ----
-#5 rolled back to nationalparks-live-3
-Warning: the following images triggers were disabled: nationalparks:live
-  You can re-enable them with: oc set triggers dc/nationalparks-live --auto
+deploymentconfig "nationalparks" rolled back
 ----
 
 Once the deploy is complete, verify that the page header is reverted to the
@@ -251,7 +245,7 @@ original header by viewing the application in your browser.
 
 [source,role=copypaste]
 ----
-http://nationalparks-live-{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}.{{ROUTER_ADDRESS}}/ws/info/
+http://nationalparks-{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}.{{ROUTER_ADDRESS}}/ws/info/
 ----
 
 [NOTE]
@@ -262,40 +256,7 @@ the automatic deployments run this:
 
 [source]
 ----
-oc deploy nationalparks-live --enable-triggers
+oc deploy nationalparks --enable-triggers
 ----
 ====
 
-#### Exercise: Rollforward
-
-// TODO: Fix deployment numbers
-
-Just like you performed a rollback, you can also perform a roll-forward using
-the same command. You'll notice above that when you requested a roll*back*, it
-caused a new deployment (#3). In essence, we always move forwards in OpenShift,
-even if we are going "back".
-
-* We know that the first deployment (#1) was the initial definition.
-* We know that the second deployment (#2) was due to our configmap addition.
-* We know that the third deployment (#3) was our first run of the pipeline.
-* We know that the fourth deployment (#4) was our change to "OpenShift National
-  Parks".
-* We know that the fifth deployment (#5) was our rollback to "National Parks".
-
-So, if we want to return to the "new code" version, that is deployment #4.
-
-[source]
-----
-oc rollback nationalparks-live-4
-----
-
-And you will see the following:
-[source]
-----
-#6 rolled back to nationalparks-live-4
-Warning: the following images triggers were disabled: nationalparks:live
-  You can re-enable them with: oc set triggers dc/nationalparks-live --auto
-----
-
-Cool! Once the roll"back" is complete, verify you again see "OpenShift
-National Parks".

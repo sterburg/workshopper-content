@@ -7,15 +7,38 @@ requires going through the master's API. All API interactions are both
 authenticated (AuthN - who are you?) and authorized (AuthZ - are you allowed to
 do what you are asking?).
 
-In the log aggregation lab we saw that there was an error in reference to a
-*Service Account*. Just like a user has permissions (AuthZ), sometimes we may
+There are two types of clients that connect to the master's API:
+
+* Users
+* Service Accounts
+
+Just like a user has permissions (AuthZ), sometimes we may
 wish for non-users to be able to perform actions against the API. These
 "non-users" are referred to as service accounts.
+
+Service accounts are local to each project and are meant for processes inside
+Pods to be able to authenticate.
+While user accounts are meant for humans to interact with multiple projects.
 
 OpenShift automatically creates a few special service accounts in every project.
 The **default** service account has its credentials automatically injected into
 every pod that is launched. By changing the permissions for that service
 account, we can do interesting things.
+
+### Exercise: Inspect Container Logs for Permission errors
+
+If you look at our route parksmap-{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}.{{ROUTER_ADDRESS}}[parksmap-{{EXPLORE_PROJECT_NAME}}{{USER_SUFFIX}}.{{ROUTER_ADDRESS}}] we just created,
+we don't see any National Parks on the map, which means our application is not 
+working as expected.
+If we inspect the containers Logs we can see it is a permission error:
+The application is trying to query OpenShift for a list of running Database 
+Services to connect to.
+
+[source,role=copypaste]
+----
+oc logs dc/parksmap |grep ERROR
+----
+
 
 ### Exercise: Grant Service Account View Permissions
 The parksmap application wants to talk to the OpenShift API to learn about other
@@ -69,6 +92,20 @@ Have them go to the project view by clicking the *Projects* button and verify
 that they can see your project and its resources. This type of arrangement (view
 but not edit) might be ideal for a developer getting visibility into a
 production application's project.
+
+To see a list of all roles you can assign:
+
+[source,role=copypaste]
+----
+oc get clusterroles
+----
+
+To see details of a specific permissions for a role you can:
+
+[source,role=copypaste]
+----
+oc describe clusterroles/view
+----
 
 ### Exercise: Redeploy Application
 One more step is required. We need to re-deploy the application because it's

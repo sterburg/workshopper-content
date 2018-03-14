@@ -30,6 +30,8 @@ incremental builds which re-use previously downloaded dependencies, previously
 built artifacts, etc.
 ----
 
+image::s2i-walkthrough.png[S2I Walkthrough]
+
 OpenShift is S2I-enabled and can use S2I as one of its build mechanisms (in
 addition to building Docker images from Dockerfiles, and "custom" builds).
 
@@ -116,6 +118,9 @@ options*. In the *Git Reference* field enter "{{NATIONALPARKS_VERSION}}". This w
 process to grab that specific tag in the code repository.
 
 image::nationalparks-tag.png[Runtimes]
+
+WARNING: Verify that the version used is the one in the text, 
+not the one in the image as it might be different.
 
 {% if USE_MAVEN %}
 
